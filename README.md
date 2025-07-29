@@ -1,329 +1,168 @@
-# LibP2P Learn - P2P Network Node
+# 🌐 libp2p-learn
 
-A fully functional Go implementation of a libp2p node with support for TCP/UDP transports, NAT traversal, and custom protocols. This project demonstrates core P2P networking concepts and provides a foundation for building distributed applications.
+A comprehensive learning project exploring **libp2p** (peer-to-peer networking library) implementations across different programming languages. This repository serves as both a learning resource and a practical implementation showcase for building distributed, decentralized applications.
 
-## ✨ Features
+## 📋 **Project Overview**
 
-### ✅ **Implemented & Working**
-- **🌐 Multi-Transport Support**: TCP and UDP (QUIC) transports for reliable and fast communication
-- **🔥 NAT Traversal & Hole Punching**: Automatic NAT detection and DCUtR protocol for firewall circumvention
-- **🤝 Peer Discovery**: DHT-based routing using Kademlia for finding and connecting to peers
-- **📡 Custom Protocols**: Built-in ping, chat, and echo protocols for peer interaction
-- **🔄 Auto-Relay**: Automatic relay discovery and circuit relay for restricted networks
-- **📊 Structured Logging**: JSON-formatted logging with configurable levels
-- **⚙️ Configuration Management**: JSON config files with CLI parameter overrides
-- **🚀 Bootstrap Support**: Easy connection to existing network nodes
+libp2p is a modular system of protocols, specifications, and libraries that enable the development of peer-to-peer network applications. This project demonstrates:
 
-### 🏗️ **Network Architecture**
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    LibP2P Node Application                  │
-├─────────────────────────────────────────────────────────────┤
-│  CLI Interface (Cobra)     │     Configuration Management   │
-├─────────────────────────────────────────────────────────────┤
-│              Custom Protocols (Ping, Chat, Echo)           │
-├─────────────────────────────────────────────────────────────┤
-│                     LibP2P Host                            │
-├─────────────────────────────────────────────────────────────┤
-│    DHT Routing    │   AutoNAT    │   Hole Punching/DCUtR   │
-├─────────────────────────────────────────────────────────────┤
-│    TCP Transport     │ QUIC Transport │    Relay Service    │
-└─────────────────────────────────────────────────────────────┘
-```
+- **P2P Node Creation**: Building singular nodes that can join peer-to-peer networks
+- **Multi-transport Support**: TCP, UDP (QUIC), and WebSocket connectivity
+- **Advanced Features**: Hole punching, NAT traversal, DHT routing, relay services
+- **Scalability**: Handling many simultaneous connections
+- **Real-world Protocols**: Custom application-level protocols (Ping, Chat, Echo)
 
-## 🚀 Quick Start
+---
 
-### Prerequisites
-- **Go 1.23.8+** (with toolchain go1.24.5)
-- Internet connection for dependency downloads
+## 🗂️ **Repository Structure**
 
-### Installation & Build
-```bash
-# Clone the repository
-git clone <your-repo-url>
-cd libp2p-learn
-
-# Install dependencies
-go mod download
-
-# Build the application
-make build
-# OR
-go build -o libp2p-node .
-```
-
-### Basic Usage
-```bash
-# Start a node with random port
-./libp2p-node
-
-# Start a node on specific port
-./libp2p-node --port 8080
-
-# Enable relay functionality
-./libp2p-node --port 8080 --relay
-
-# Connect to bootstrap peers
-./libp2p-node --bootstrap /dnsaddr/bootstrap.libp2p.io/p2p/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN
-
-# Use configuration file
-./libp2p-node --config config.json
-```
-
-## 📋 Real Example Output
-
-When you run the node, you'll see output like this:
-
-```bash
-$ ./libp2p-node --port 8080
-Starting libp2p node...
-Configuration:
-  Port: 8080
-  Enable Relay: false
-  Enable Hole Punching: true
-  Max Connections: 1000
-  Bootstrap Peers: 2
-
-Node started successfully!
-Node ID: 12D3KooWErhAm2s4WPJ1VwmTmwU7raLi9X94LsDkcvCmqJ4z1YZb
-Listening addresses:
-  /ip4/127.0.0.1/tcp/8080/p2p/12D3KooWErhAm2s4WPJ1VwmTmwU7raLi9X94LsDkcvCmqJ4z1YZb
-  /ip4/127.0.0.1/udp/8080/quic-v1/p2p/12D3KooWErhAm2s4WPJ1VwmTmwU7raLi9X94LsDkcvCmqJ4z1YZb
-  /ip6/::1/tcp/8080/p2p/12D3KooWErhAm2s4WPJ1VwmTmwU7raLi9X94LsDkcvCmqJ4z1YZb
-
-Node is running. Features enabled:
-  ✓ TCP Transport
-  ✓ UDP/QUIC Transport
-  ✓ Hole Punching/NAT Traversal
-  ✓ AutoNAT
-  ✓ DHT Routing
-  ✓ Custom Protocols (ping, chat, echo)
-
-Press Ctrl+C to stop...
-```
-
-## ⚙️ Configuration
-
-### Command Line Options
-| Flag | Short | Type | Default | Description |
-|------|-------|------|---------|-------------|
-| `--port` | `-p` | int | 0 | Port to listen on (0 for random) |
-| `--relay` | `-r` | bool | false | Enable relay functionality |
-| `--bootstrap` | `-b` | []string | [] | Bootstrap peer addresses |
-| `--config` | `-c` | string | "" | Configuration file path |
-
-### Configuration File Example
-Create a `config.json` file:
-```json
-{
-  "listen_port": 8080,
-  "bootstrap_peers": [
-    "/dnsaddr/bootstrap.libp2p.io/p2p/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN",
-    "/dnsaddr/bootstrap.libp2p.io/p2p/QmQCU2EcMqAqQPR2i9bChDtGNJchTbq5TbXJJ16u19uLTa"
-  ],
-  "max_connections": 1000,
-  "low_water": 50,
-  "high_water": 200,
-  "enable_relay": true,
-  "enable_hole_punch": true,
-  "enable_autonat": true,
-  "log_level": "info",
-  "log_file": "logs/libp2p-node.log"
-}
-```
-
-Generate example config:
-```bash
-make config
-```
-
-## 🛠️ Development
-
-### Project Structure
 ```
 libp2p-learn/
-├── main.go              # Application entry point & CLI
-├── node.go              # Core libp2p node implementation
-├── config.go            # Configuration management
-├── bootstrap.go         # Peer discovery and connection
-├── protocols.go         # Custom protocol implementations
-├── go.mod              # Go module dependencies
-├── Makefile            # Build automation
-├── Dockerfile          # Container support
-├── README.md           # This documentation
-└── .gitignore          # Git ignore rules
+├── README.md                 # This overview document
+├── libp2p-go/               # Go implementation (Complete)
+│   ├── README.md            # Detailed Go-specific documentation
+│   ├── main.go              # CLI application entry point
+│   ├── node.go              # Core libp2p node implementation
+│   ├── protocols.go         # Custom protocol handlers
+│   ├── config.go            # Configuration management
+│   ├── bootstrap.go         # Network bootstrapping
+│   ├── dht_test.go          # DHT functionality tests
+│   ├── integration_test.go  # Multi-node integration tests
+│   ├── node_test.go         # Unit tests for node creation
+│   ├── test_helpers.go      # Test synchronization utilities
+│   ├── Makefile             # Build automation
+│   ├── Dockerfile           # Container configuration
+│   ├── go.mod               # Go dependency management
+│   └── ...
+└── libp2p-rust/             # Rust implementation (Planned)
+    └── README.md            # Rust-specific documentation
 ```
 
-### Available Make Commands
+---
+
+## 🚀 **Quick Start**
+
+### **Go Implementation** (Ready to Use)
+
+The Go implementation is **complete and fully functional**. Navigate to the `libp2p-go/` directory for detailed setup instructions.
+
 ```bash
-make build         # Build the binary
-make run           # Build and run with defaults
-make test          # Run tests
-make clean         # Clean build artifacts
-make config        # Generate example configuration
-make help          # Show all available commands
-
-# Docker support
-make docker-build  # Build Docker image
-make docker-run    # Run in container
+cd libp2p-go/
+make build
+make run-example
 ```
 
-### Custom Protocols
+**Key Features:**
+- ✅ TCP, UDP (QUIC), WebSocket transports
+- ✅ DHT-based peer discovery and data storage
+- ✅ Circuit relay for NAT traversal
+- ✅ Hole punching with DCUtR protocol
+- ✅ AutoNAT for automatic NAT detection
+- ✅ Comprehensive test suite with deterministic behavior
+- ✅ Docker support for containerized deployment
+- ✅ CLI interface with Cobra
+- ✅ Structured logging with Logrus
 
-The node implements three custom protocols:
+### **Rust Implementation** (Coming Soon)
 
-#### 1. Ping Protocol (`/libp2p-learn/ping/1.0.0`)
-Simple ping/pong for connectivity testing
-```go
-response, err := protocolHandler.SendPing(ctx, peerID, "hello")
-// Returns: "pong: hello (from 12D3KooW...)"
-```
+The Rust implementation is planned and will provide similar functionality using the Rust libp2p ecosystem.
 
-#### 2. Chat Protocol (`/libp2p-learn/chat/1.0.0`)
-Text messaging between peers
-```go
-response, err := protocolHandler.SendChatMessage(ctx, peerID, "Hello P2P!")
-// Returns: "[15:04:05] Echo: Hello P2P!"
-```
-
-#### 3. Echo Protocol (`/libp2p-learn/echo/1.0.0`)
-Data echo service for testing
-```go
-response, err := protocolHandler.SendEcho(ctx, peerID, "test data")
-// Returns: "test data"
-```
-
-## 🌐 Network Features
-
-### Supported Transports
-- **TCP**: Traditional TCP connections for reliable communication
-- **QUIC**: Modern UDP-based transport with built-in encryption and multiplexing
-- **IPv4 & IPv6**: Full dual-stack support
-
-### NAT Traversal
-The node automatically handles various NAT scenarios:
-- **AutoNAT**: Detects if the node is behind NAT
-- **Hole Punching (DCUtR)**: Coordinates direct connections through NAT
-- **Circuit Relay**: Fallback for restrictive networks
-- **UPnP**: Automatic port forwarding when available
-
-### Supported NAT Types
-- ✅ Full Cone NAT
-- ✅ Restricted Cone NAT  
-- ✅ Port Restricted Cone NAT
-- ⚠️ Symmetric NAT (limited support via relay)
-
-### Debug Logging
-Enable debug logging in config:
-```json
-{
-  "log_level": "debug",
-  "log_file": "debug.log"
-}
-```
-
-## 🐳 Docker Support
-
-### Build and Run with Docker
 ```bash
-# Build image
-make docker-build
-
-# Run container
-docker run -p 8080:8080 libp2p-node --port 8080
-
-# Run with custom config
-docker run -v $(pwd)/config.json:/config.json libp2p-node --config /config.json
+cd libp2p-rust/
+# Instructions coming soon...
 ```
 
-### Multi-Node Testing
+---
+
+## 🎯 **Learning Objectives**
+
+This project helps you understand:
+
+1. **P2P Networking Fundamentals**
+   - Peer discovery and connection management
+   - Distributed hash tables (DHT)
+   - Network topologies and routing
+
+2. **libp2p Ecosystem**
+   - Multiaddress format and transport abstraction
+   - Stream multiplexing and protocol negotiation
+   - Security layers (Noise, TLS)
+
+3. **Advanced Networking Concepts**
+   - NAT traversal techniques
+   - Hole punching protocols
+   - Circuit relay patterns
+
+4. **Distributed Systems**
+   - Gossip protocols
+   - Consensus mechanisms
+   - Network resilience
+
+5. **Implementation Patterns**
+   - Event-driven architecture
+   - Asynchronous programming
+   - Testing distributed systems
+
+---
+
+## 🛠️ **Development**
+
+### **Prerequisites**
+
+- **Go**: Version 1.23+ (for Go implementation)
+- **Rust**: Version 1.70+ (for future Rust implementation)
+- **Docker**: For containerized testing
+- **Make**: For build automation
+
+### **Repository Setup**
+
 ```bash
-# Start first node
-./libp2p-node --port 8001 --relay
+git clone <repository-url>
+cd libp2p-learn
 
-# In another terminal, connect second node
-./libp2p-node --port 8002 --bootstrap /ip4/127.0.0.1/tcp/8001/p2p/[PEER_ID_FROM_FIRST_NODE]
+# For Go development
+cd libp2p-go
+make dev-tools
+make test
+
+# For Rust development (future)
+cd libp2p-rust
+# Setup instructions coming soon...
 ```
 
-## 🧪 Testing Suite
+---
 
-The project includes a comprehensive test suite with **deterministic behavior** using advanced synchronization mechanisms instead of arbitrary time delays.
+## 🧪 **Testing Philosophy**
 
-### Test Categories
-```bash
-make test              # Run all tests
-make test-node         # Node creation and configuration tests
-make test-dht          # DHT functionality tests  
-make test-protocols    # Custom protocol tests
-make test-integration  # Multi-node integration tests
-make test-websocket    # WebSocket transport tests
-make test-race         # Race condition detection
-```
+Both implementations emphasize **deterministic testing**:
 
-### 🎯 Deterministic Test Design
+- **Event-driven synchronization** instead of arbitrary time delays
+- **Channel-based coordination** for reliable test execution
+- **Comprehensive integration tests** covering real-world scenarios
+- **Race condition detection** for concurrent operations
 
-Our tests use **event-driven synchronization** for reliable, fast execution:
+---
 
-#### ✅ **Proper Synchronization (What We Use)**
-```go
-// Wait for actual connection events
-err := WaitForConnection(ctx, node1, node2, timeout)
+## 📚 **Resources**
 
-// Wait for DHT values to be available  
-err := WaitForDHTValue(ctx, dht, key, value, timeout)
+### **libp2p Documentation**
+- [libp2p Specification](https://github.com/libp2p/specs)
+- [go-libp2p Documentation](https://docs.libp2p.io/)
+- [rust-libp2p Documentation](https://docs.rs/libp2p/)
 
-// Wait for protocols to be ready
-err := WaitWithCondition(ctx, func() bool {
-    return protocolIsReady()
-}, timeout, interval)
-```
+### **Networking Concepts**
+- [Kademlia DHT Paper](https://pdos.csail.mit.edu/~petar/papers/maymounkov-kademlia-lncs.pdf)
+- [NAT Traversal Techniques](https://datatracker.ietf.org/doc/html/rfc5389)
+- [WebRTC and STUN/TURN](https://webrtcforthecurious.com/)
 
-#### ❌ **Anti-Pattern (What We Avoid)**
-```go
-time.Sleep(5 * time.Second)  // Unreliable, slow, flaky
-```
+---
 
-### 🚀 **Benefits of Deterministic Tests**
+## 🎓 **Educational Note**
 
-| Aspect | Traditional `time.Sleep` | **Our Event-Driven Approach** |
-|--------|-------------------------|-------------------------------|
-| **Speed** | ⏱️ 3-5 seconds per test | ⚡ 0.03-0.1 seconds per test |
-| **Reliability** | ❌ Flaky in CI/CD | ✅ 100% consistent |
-| **Resource Usage** | 💰 Wasteful waiting | 🎯 Efficient event-based |
-| **Debugging** | 🐛 Hard to debug timeouts | 🔍 Clear error messages |
+This is a learning project designed to explore libp2p concepts and implementations. While the code is production-quality, it's primarily intended for educational purposes and understanding distributed systems concepts.
 
-### 📋 **Test Coverage**
-- ✅ Node creation with different transports (TCP, QUIC, WebSocket)
-- ✅ DHT value storage and retrieval
-- ✅ Custom protocol communication (ping, chat, echo)
-- ✅ Multi-node mesh networks
-- ✅ Relay functionality and circuit relay
-- ✅ Hole punching and NAT traversal
-- ✅ Network resilience and failure recovery
-- ✅ High-load scenarios (10+ concurrent nodes)
-- ✅ Bootstrap peer discovery
-- ✅ AutoNAT detection
+**Happy Learning! 🚀**
 
-### 🔧 **Test Helpers**
-The `test_helpers.go` file provides reusable synchronization utilities:
-- `WaitForConnection()` - Wait for peer connections using network events
-- `WaitForDHTValue()` - Wait for DHT value propagation  
-- `WaitForPeerCount()` - Wait for specific peer count
-- `WaitWithCondition()` - Generic condition-based waiting
-- `connectionNotifiee` - Event-driven connection detection
+---
 
-## 📊 Performance & Limits
-
-- **Max Connections**: 1000 (configurable)
-- **Transport Protocols**: TCP, QUIC, WebSocket support
-- **Memory Usage**: ~50-100MB baseline
-- **Bootstrap Time**: 2-5 seconds typically
-- **NAT Traversal Success**: 80-90% for most NAT types
-
-## 📚 Learning Resources
-
-- [libp2p Documentation](https://docs.libp2p.io/)
-- [libp2p Specifications](https://github.com/libp2p/specs)
-- [Go libp2p Examples](https://github.com/libp2p/go-libp2p/tree/master/examples)
-- [NAT Traversal Guide](https://docs.libp2p.io/concepts/nat/)
-- [DHT Explanation](https://docs.libp2p.io/concepts/protocols/#kad-dht)
+*For specific implementation details, navigate to the respective language directories (`libp2p-go/` or `libp2p-rust/`) and check their individual README files.* 
